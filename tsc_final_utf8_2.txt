@@ -1,0 +1,101 @@
+﻿src/components/layout/Header/Header.tsx(8,1): error TS6133: 'Button' is declared but its value is never read.
+src/components/layout/Header/Header.tsx(13,9): error TS6133: 'navigate' is declared but its value is never read.
+src/components/layout/Header/Header.tsx(14,17): error TS6133: 'logout' is declared but its value is never read.
+src/components/layout/Header/Header.tsx(100,30): error TS2339: Property 'name' does not exist on type 'User'.
+src/components/layout/Header/Header.tsx(105,30): error TS2339: Property 'name' does not exist on type 'User'.
+src/components/layout/Header/UserMenu.tsx(68,70): error TS2339: Property 'name' does not exist on type 'User'.
+src/components/layout/Sidebar/Sidebar.tsx(2,1): error TS6133: 'NavLink' is declared but its value is never read.
+src/components/layout/Sidebar/SidebarItem.tsx(38,14): error TS18048: 'item.children' is possibly 'undefined'.
+src/components/maps/SiteMap.tsx(7,1): error TS6133: 'Button' is declared but its value is never read.
+src/components/maps/SiteMap.tsx(141,9): error TS2353: Object literal may only specify known properties, and 'map' does not exist in type 'PhotoLocationMarkerProps'.
+src/components/maps/SiteMap.tsx(148,31): error TS2345: Argument of type 'ReactNode' is not assignable to parameter of type 'Marker<any>'.
+  Type 'undefined' is not assignable to type 'Marker<any>'.
+src/components/qs/SiteVisitScheduler/ScheduleVisit.tsx(13,63): error TS6133: 'reportId' is declared but its value is never read.
+src/components/reports/ReportDetail/CommentSection.tsx(76,22): error TS2339: Property 'name' does not exist on type 'User'.
+src/components/reports/ReportDetail/DecisionButtons.tsx(16,3): error TS6133: 'reportId' is declared but its value is never read.
+src/components/reports/ReportForm/ClientSearch.tsx(16,3): error TS6133: 'selectedClientId' is declared but its value is never read.
+src/components/reports/ReportForm/ClientSearch.tsx(126,57): error TS2339: Property 'projectName' does not exist on type 'Client'.
+src/components/reports/ReportForm/ClientSearch.tsx(144,67): error TS2339: Property 'projectName' does not exist on type 'Client'.
+src/components/reports/ReportForm/ReportForm.tsx(76,21): error TS2322: Type '(clientId: string) => void' is not assignable to type '(client: Client) => void'.
+  Types of parameters 'clientId' and 'client' are incompatible.
+    Type 'Client' is not assignable to type 'string'.
+src/components/reports/ReportForm/SiteDetailsSection.tsx(81,21): error TS2322: Type '{ coordinates: GeotagData | undefined; onLocationSelect: (coords: any) => void; }' is not assignable to type 'IntrinsicAttributes & GeoLocationMapProps'.
+  Property 'coordinates' does not exist on type 'IntrinsicAttributes & GeoLocationMapProps'.
+src/components/reports/ReportForm/SiteDetailsSection.tsx(82,40): error TS7006: Parameter 'coords' implicitly has an 'any' type.
+src/components/reports/ReportForm/WorkProgressSection.tsx(1,17): error TS6133: 'useState' is declared but its value is never read.
+src/components/reports/ReportPrint/PDFGenerator.ts(21,26): error TS2339: Property 'name' does not exist on type 'User'.
+src/components/reports/ReportPrint/PDFGenerator.ts(154,35): error TS2339: Property 'projectName' does not exist on type 'Client'.
+src/components/reports/ReportPrint/PDFGenerator.ts(156,33): error TS2339: Property 'contactEmail' does not exist on type 'Client'.
+src/components/reports/ReportPrint/PDFGenerator.ts(157,33): error TS2339: Property 'contactPhone' does not exist on type 'Client'.
+src/components/reports/ReportPrint/PDFGenerator.ts(187,26): error TS2339: Property 'name' does not exist on type 'User'.
+src/components/reports/ReportPrint/PDFGenerator.ts(188,26): error TS2339: Property 'name' does not exist on type 'User'.
+src/components/reports/ReportPrint/PDFGenerator.ts(406,20): error TS2339: Property 'name' does not exist on type 'User'.
+src/components/reports/ReportPrint/PDFGenerator.ts(407,26): error TS2339: Property 'name' does not exist on type 'User'.
+src/components/reports/ReportPrint/PDFGenerator.ts(413,20): error TS2339: Property 'name' does not exist on type 'User'.
+src/components/reports/ReportPrint/PDFGenerator.ts(414,26): error TS2339: Property 'name' does not exist on type 'User'.
+src/hooks/useAuth.ts(5,28): error TS2724: '"@/types/auth.types"' has no exported member named 'RegisterData'. Did you mean 'RegisterDto'?
+src/hooks/useAuth.ts(65,26): error TS2304: Cannot find name 'User'.
+src/hooks/useAuth.ts(67,40): error TS2339: Property 'updateProfile' does not exist on type '{ login: (credentials: LoginCredentials) => Promise<AxiosResponse<AuthResponse, any, {}>>; logout: () => Promise<AxiosResponse<any, any, {}>>; ... 5 more ...; verifyEmail: (token: string) => Promise<...>; }'.
+src/hooks/useAuth.ts(81,23): error TS2339: Property 'changePassword' does not exist on type '{ login: (credentials: LoginCredentials) => Promise<AxiosResponse<AuthResponse, any, {}>>; logout: () => Promise<AxiosResponse<any, any, {}>>; ... 5 more ...; verifyEmail: (token: string) => Promise<...>; }'.
+src/hooks/useCamera.ts(26,9): error TS6133: 'fileInputRef' is declared but its value is never read.
+src/hooks/useClients.ts(1,33): error TS6133: 'useEffect' is declared but its value is never read.
+src/hooks/useNotifications.ts(30,11): error TS6133: 'handleNewNotification' is declared but its value is never read.
+src/pages/admin/AdminDashboard.tsx(8,3): error TS6133: 'LineChart' is declared but its value is never read.
+src/pages/admin/AdminDashboard.tsx(8,14): error TS6133: 'Line' is declared but its value is never read.
+src/pages/admin/AdminDashboard.tsx(117,34): error TS2339: Property 'name' does not exist on type 'User'.
+src/pages/admin/AdminDashboard.tsx(242,61): error TS18048: 'percent' is possibly 'undefined'.
+src/pages/admin/AdminDashboard.tsx(247,45): error TS6133: 'entry' is declared but its value is never read.
+src/pages/admin/AuditLogs.tsx(44,13): error TS2322: Type '{ id: string; timestamp: Date; user: string; action: string; resource: string; resourceId: string; details: string; ipAddress: string; userAgent: string; status: string; }[]' is not assignable to type 'AuditLog[]'.
+  Type '{ id: string; timestamp: Date; user: string; action: string; resource: string; resourceId: string; details: string; ipAddress: string; userAgent: string; status: string; }' is not assignable to type 'AuditLog'.
+    Types of property 'status' are incompatible.
+      Type 'string' is not assignable to type '"success" | "failure"'.
+src/pages/admin/AuditLogs.tsx(236,10): error TS2304: Cannot find name 'Modal'.
+src/pages/admin/AuditLogs.tsx(287,11): error TS2304: Cannot find name 'Modal'.
+src/pages/admin/ClientManagement.tsx(47,12): error TS2339: Property 'projectName' does not exist on type 'Client'.
+src/pages/admin/ClientManagement.tsx(70,27): error TS2339: Property 'projectName' does not exist on type 'Client'.
+src/pages/admin/ClientManagement.tsx(73,28): error TS2339: Property 'contactEmail' does not exist on type 'Client'.
+src/pages/admin/ClientManagement.tsx(74,28): error TS2339: Property 'contactPhone' does not exist on type 'Client'.
+src/pages/admin/ClientManagement.tsx(94,56): error TS2345: Argument of type '{ name: string; customerNumber: string; projectName: string; address: string; contactPerson: string; contactEmail: string; contactPhone: string; }' is not assignable to parameter of type 'CreateClientDto'.
+  Property 'email' is missing in type '{ name: string; customerNumber: string; projectName: string; address: string; contactPerson: string; contactEmail: string; contactPhone: string; }' but required in type 'CreateClientDto'.
+src/pages/admin/ClientManagement.tsx(196,73): error TS2339: Property 'projectName' does not exist on type 'Client'.
+src/pages/admin/ClientManagement.tsx(202,77): error TS2339: Property 'contactEmail' does not exist on type 'Client'.
+src/pages/admin/ClientManagement.tsx(210,31): error TS2339: Property 'reportCount' does not exist on type 'Client'.
+src/pages/admin/UserManagement.tsx(14,5): error TS2353: Object literal may only specify known properties, and 'name' does not exist in type 'User'.
+src/pages/admin/UserManagement.tsx(22,5): error TS2353: Object literal may only specify known properties, and 'name' does not exist in type 'User'.
+src/pages/admin/UserManagement.tsx(30,5): error TS2353: Object literal may only specify known properties, and 'name' does not exist in type 'User'.
+src/pages/admin/UserManagement.tsx(70,10): error TS2339: Property 'name' does not exist on type 'User'.
+src/pages/admin/UserManagement.tsx(89,18): error TS2339: Property 'name' does not exist on type 'User'.
+src/pages/admin/UserManagement.tsx(116,11): error TS2353: Object literal may only specify known properties, and 'name' does not exist in type 'User'.
+src/pages/admin/UserManagement.tsx(216,33): error TS2339: Property 'name' does not exist on type 'User'.
+src/pages/admin/UserManagement.tsx(221,33): error TS2339: Property 'name' does not exist on type 'User'.
+src/pages/admin/UserManagement.tsx(240,36): error TS2339: Property 'createdAt' does not exist on type 'User'.
+src/pages/auth/ForgotPassword.tsx(32,21): error TS2339: Property 'requestPasswordReset' does not exist on type '{ login: (credentials: LoginCredentials) => Promise<AxiosResponse<AuthResponse, any, {}>>; logout: () => Promise<AxiosResponse<any, any, {}>>; ... 5 more ...; verifyEmail: (token: string) => Promise<...>; }'.
+src/pages/qs/QSDashboard.tsx(6,1): error TS6133: 'StatsCards' is declared but its value is never read.
+src/pages/qs/QSDashboard.tsx(151,34): error TS2339: Property 'name' does not exist on type 'User'.
+src/pages/qs/QSDashboard.tsx(329,27): error TS2322: Type '{ activities: any[]; }' is not assignable to type 'IntrinsicAttributes'.
+  Property 'activities' does not exist on type 'IntrinsicAttributes'.
+src/pages/qs/ReportReviewDetail.tsx(6,10): error TS6133: 'SiteVisitReport' is declared but its value is never read.
+src/pages/qs/ReportReviewDetail.tsx(8,1): error TS6133: 'DecisionButtons' is declared but its value is never read.
+src/pages/qs/ReportReviewDetail.tsx(87,26): error TS2339: Property 'downloadReport' does not exist on type 'typeof PDFGenerator'.
+src/pages/qs/ReportReviewDetail.tsx(132,84): error TS2339: Property 'name' does not exist on type 'User'.
+src/pages/qs/ReportReviewDetail.tsx(185,57): error TS2339: Property 'name' does not exist on type 'User'.
+src/pages/qs/ReportReviewDetail.tsx(219,38): error TS2339: Property 'name' does not exist on type 'User'.
+src/pages/qs/ReportReviewDetail.tsx(251,48): error TS6133: 'index' is declared but its value is never read.
+src/pages/qs/ReviewReports.tsx(5,1): error TS6133: 'ReviewQueue' is declared but its value is never read.
+src/pages/qs/ReviewReports.tsx(8,1): error TS6133: 'Button' is declared but its value is never read.
+src/pages/qs/ReviewReports.tsx(227,17): error TS2322: Type '{ key: string; report: SiteVisitReport; onAssign: (() => Promise<void>) | undefined; onView: () => void; onQuickDecision: (() => void) | undefined; }' is not assignable to type 'IntrinsicAttributes & ReviewItemProps'.
+  Property 'onQuickDecision' does not exist on type 'IntrinsicAttributes & ReviewItemProps'.
+src/pages/rm/EditReport.tsx(17,10): error TS6133: 'initialPhotos' is declared but its value is never read.
+src/pages/rm/EditReport.tsx(124,16): error TS2367: This comparison appears to be unintentional because the types '"rejected" | "pending_qs_review" | "under_review" | "site_visit_scheduled" | "approved" | "archived"' and '"revision_requested"' have no overlap.
+src/pages/rm/EditReport.tsx(194,13): error TS2322: Type 'string' is not assignable to type 'Date'.
+src/pages/rm/MyReports.tsx(1,17): error TS6133: 'useState' is declared but its value is never read.
+src/pages/rm/ReportDetail.tsx(8,3): error TS6133: 'LineChart' is declared but its value is never read.
+src/pages/rm/ReportDetail.tsx(8,14): error TS6133: 'Line' is declared but its value is never read.
+src/pages/rm/ReportDetail.tsx(117,34): error TS2339: Property 'name' does not exist on type 'User'.
+src/pages/rm/ReportDetail.tsx(242,61): error TS18048: 'percent' is possibly 'undefined'.
+src/pages/rm/ReportDetail.tsx(247,45): error TS6133: 'entry' is declared but its value is never read.
+src/pages/rm/ReportPrint.tsx(43,26): error TS2339: Property 'downloadReport' does not exist on type 'typeof PDFGenerator'.
+src/pages/rm/RMDashboard.tsx(32,34): error TS2339: Property 'name' does not exist on type 'User'.
+src/services/api/axiosConfig.ts(52,38): error TS2339: Property 'message' does not exist on type '{}'.
+src/services/api/axiosConfig.ts(54,37): error TS2339: Property 'errors' does not exist on type '{}'.
+src/services/storage/fileUploadService.ts(84,5): error TS6133: 'onProgress' is declared but its value is never read.
