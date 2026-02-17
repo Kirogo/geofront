@@ -1,22 +1,22 @@
-import React from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { Link } from 'react-router-dom'
-import { useAuth } from '@/hooks/useAuth'
-import { Input } from '@/components/common/Input'
-import { Button } from '@/components/common/Button'
+// src/pages/auth/Login.tsx
+import React, { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Link } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
+import { ConstructionDoodles } from '@/components/common/ConstructionDoodles';
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
   rememberMe: z.boolean().optional(),
-})
+});
 
-type LoginFormData = z.infer<typeof loginSchema>
+type LoginFormData = z.infer<typeof loginSchema>;
 
 export const Login: React.FC = () => {
-  const { login, isLoading } = useAuth()
+  const { login, isLoading } = useAuth();
 
   const {
     register,
@@ -24,80 +24,195 @@ export const Login: React.FC = () => {
     formState: { errors },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
-  })
+  });
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      await login(data)
+      await login(data);
     } catch (error) {
       // Error is handled by the hook
     }
-  }
+  };
+
+  // Remove any body styling that might interfere
+  useEffect(() => {
+    document.body.style.backgroundColor = '';
+    document.body.style.display = '';
+    document.body.style.placeItems = '';
+    
+    return () => {
+      document.body.style.backgroundColor = '';
+      document.body.style.display = '';
+      document.body.style.placeItems = '';
+    };
+  }, []);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold text-secondary-900">Sign in to your account</h2>
+    <div className="flex flex-col lg:flex-row min-h-screen bg-white">
+      {/* Left Panel - Mobile First: Hidden on mobile, visible on desktop */}
+      <div className="hidden lg:flex lg:w-[65%] relative min-h-screen overflow-hidden bg-gradient-to-br from-[#EBF4DD] to-[#90AB8B]">
+        <div className="absolute inset-0">
+          <ConstructionDoodles />
+        </div>
+        
+        {/* Overlay Content */}
+        <div className="absolute inset-0 flex flex-col justify-center items-center text-[#3B4953] p-8 lg:p-12">
+          <div className="max-w-md text-center">
+            <h1 className="text-4xl lg:text-5xl font-light mb-4 tracking-tight">
+              Geo<span className="font-semibold text-[#5A7863]">Build</span>
+            </h1>
+            <p className="text-base lg:text-lg opacity-80 leading-relaxed">
+              Digitized Project Monitoring System
+            </p>
+          
+          </div>
+        </div>
+        
+        {/* Bottom Attribution */}
+        <div className="absolute bottom-4 lg:bottom-6 left-0 right-0 text-center text-xs lg:text-sm text-[#3B4953] opacity-60">
+          © 2026 NCBA Bank · Secure Construction Financing
+        </div>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <Input
-          label="Email address"
-          type="email"
-          {...register('email')}
-          error={errors.email?.message}
-          placeholder="you@example.com"
-          autoComplete="email"
-        />
-
-        <Input
-          label="Password"
-          type="password"
-          {...register('password')}
-          error={errors.password?.message}
-          placeholder="••••••••"
-          autoComplete="current-password"
-        />
-
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <input
-              id="remember-me"
-              type="checkbox"
-              {...register('rememberMe')}
-              className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-secondary-300 rounded"
-            />
-            <label htmlFor="remember-me" className="ml-2 block text-sm text-secondary-700">
-              Remember me
-            </label>
+      {/* Right Panel - Login Form (Full width on mobile) */}
+      <div className="w-full lg:w-[35%] flex items-center justify-center p-4 sm:p-6 lg:p-8 min-h-screen lg:min-h-0">
+        <div className="w-full max-w-sm sm:max-w-md mx-auto space-y-6 lg:space-y-8">
+          {/* Mobile Logo - Visible only on mobile */}
+          <div className="lg:hidden text-center mb-4">
+            <h1 className="text-3xl sm:text-4xl font-light text-[#3B4953]">
+              Geo<span className="font-semibold text-[#5A7863]">Build</span>
+            </h1>
+            <p className="mt-2 text-sm text-[#3B4953]/60">
+              Digitized Project Monitoring System
+            </p>
           </div>
 
-          <div className="text-sm">
-            <Link to="/forgot-password" className="font-medium text-primary-600 hover:text-primary-500">
-              Forgot your password?
-            </Link>
+          {/* Header */}
+          <div className="text-center lg:text-left">
+            <h2 className="text-1xl sm:text-2xl font-light text-[#3B4953]">
+              Welcome, <span className="font-semibold text-[#5A7863]">Sign In</span>
+            </h2>
           </div>
-        </div>
 
-        <Button
-          type="submit"
-          variant="primary"
-          size="lg"
-          fullWidth
-          isLoading={isLoading}
-        >
-          Sign in
-        </Button>
+          {/* Form */}
+          <form onSubmit={handleSubmit(onSubmit)} className="mt-6 sm:mt-8 space-y-4 sm:space-y-6">
+            <div className="space-y-4 sm:space-y-5">
+              {/* Email Field */}
+              <div>
+                <label htmlFor="email" className="block text-xs sm:text-sm font-medium text-[#3B4953] mb-1 sm:mb-1.5">
+                  Email address
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  {...register('email')}
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base rounded-xl border border-[#90AB8B]/30 bg-white/50 
+                           focus:outline-none focus:ring-2 focus:ring-[#5A7863] focus:border-transparent
+                           placeholder:text-[#3B4953]/30 transition-all duration-200
+                           text-[#3B4953]"
+                  placeholder="architect@firm.com"
+                  autoComplete="email"
+                />
+                {errors.email && (
+                  <p className="mt-1 text-xs sm:text-sm text-[#D14545]">{errors.email.message}</p>
+                )}
+              </div>
 
-        <div className="mt-6 text-center text-sm">
-          <span className="text-secondary-600">Don't have an account? </span>
-          <Link to="/register" className="font-medium text-primary-600 hover:text-primary-500">
-            Register here
-          </Link>
+              {/* Password Field */}
+              <div>
+                <label htmlFor="password" className="block text-xs sm:text-sm font-medium text-[#3B4953] mb-1 sm:mb-1.5">
+                  Password
+                </label>
+                <input
+                  id="password"
+                  type="password"
+                  {...register('password')}
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base rounded-xl border border-[#90AB8B]/30 bg-white/50
+                           focus:outline-none focus:ring-2 focus:ring-[#5A7863] focus:border-transparent
+                           placeholder:text-[#3B4953]/30 transition-all duration-200
+                           text-[#3B4953]"
+                  placeholder="••••••••"
+                  autoComplete="current-password"
+                />
+                {errors.password && (
+                  <p className="mt-1 text-xs sm:text-sm text-[#D14545]">{errors.password.message}</p>
+                )}
+              </div>
+            </div>
+
+            {/* Remember Me & Forgot Password */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
+              <div className="flex items-center">
+                <input
+                  id="remember-me"
+                  type="checkbox"
+                  {...register('rememberMe')}
+                  className="h-4 w-4 rounded border-[#90AB8B]/30 text-[#5A7863] 
+                           focus:ring-[#5A7863] focus:ring-offset-0"
+                />
+                <label htmlFor="remember-me" className="ml-2 block text-xs sm:text-sm text-[#3B4953]/70">
+                  Remember me
+                </label>
+              </div>
+
+              <Link
+                to="/forgot-password"
+                className="text-xs sm:text-sm font-medium text-[#5A7863] hover:text-[#3B4953] transition-colors"
+              >
+                Forgot password?
+              </Link>
+            </div>
+
+            {/* Login Button */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-[#5A7863] hover:bg-[#3B4953] text-white py-3 sm:py-3.5 px-4 rounded-xl
+                       font-medium text-sm sm:text-base transition-all duration-200 
+                       active:scale-[0.98] hover:scale-[1.02] transform
+                       focus:outline-none focus:ring-2 focus:ring-[#5A7863] focus:ring-offset-2
+                       disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            >
+              {isLoading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="animate-spin h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                  </svg>
+                  <span>Signing in...</span>
+                </span>
+              ) : (
+                'Sign in'
+              )}
+            </button>
+
+            {/* Divider */}
+            <div className="relative my-4 sm:my-6">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-[#90AB8B]/20"></div>
+              </div>
+              <div className="relative flex justify-center text-xs">
+                <span className="px-4 bg-white text-[#3B4953]/40">
+                  Secure access
+                </span>
+              </div>
+            </div>
+
+            {/* Register Link */}
+            <p className="text-center text-xs sm:text-sm text-[#3B4953]/60">
+              Don't have an account?{' '}
+              <Link
+                to="/register"
+                className="font-medium text-[#5A7863] hover:text-[#3B4953] transition-colors"
+              >
+                Contact administrator
+              </Link>
+            </p>
+          </form>
         </div>
-      </form>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

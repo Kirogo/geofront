@@ -1,3 +1,4 @@
+//src/hooks/useAuth.ts
 import { useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
