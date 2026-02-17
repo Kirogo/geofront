@@ -30,57 +30,54 @@ export const Login: React.FC = () => {
     try {
       await login(data);
     } catch (error) {
-      // Error is handled by the hook
+      // Error handled by hook
     }
   };
 
-  // Remove any body styling that might interfere
   useEffect(() => {
     document.body.style.backgroundColor = '';
     document.body.style.display = '';
-    document.body.style.placeItems = '';
-    
     return () => {
       document.body.style.backgroundColor = '';
       document.body.style.display = '';
-      document.body.style.placeItems = '';
     };
   }, []);
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-white">
-      {/* Left Panel - Mobile First: Hidden on mobile, visible on desktop */}
-      <div className="hidden lg:flex lg:w-[65%] relative min-h-screen overflow-hidden bg-gradient-to-br from-[#EBF4DD] to-[#90AB8B]">
-        <div className="absolute inset-0">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-white"  style={{ fontFamily: 'Century Gothic, CenturyGothic, AppleGothic, sans-serif' }}>
+      {/* Left Panel - 65% on desktop */}
+      <div className="hidden lg:flex lg:w-[65%] relative min-h-screen overflow-hidden bg-gradient-to-br from-[#1A3636] to-[#40534C]">
+        <div className="absolute inset-0 opacity-20">
           <ConstructionDoodles />
         </div>
         
         {/* Overlay Content */}
-        <div className="absolute inset-0 flex flex-col justify-center items-center text-[#3B4953] p-8 lg:p-12">
+        <div className="absolute inset-0 flex flex-col justify-center items-center text-white p-8 lg:p-12">
           <div className="max-w-md text-center">
             <h1 className="text-4xl lg:text-5xl font-light mb-4 tracking-tight">
-              Geo<span className="font-semibold text-[#5A7863]">Build</span>
+              Geo<span className="font-semibold text-[#D6BD98]">Build</span>
             </h1>
-            <p className="text-base lg:text-lg opacity-80 leading-relaxed">
+             <p className="text-base lg:text-lg opacity-80 leading-relaxed">
               Digitized Project Monitoring System
             </p>
-          
+            
+
           </div>
         </div>
         
         {/* Bottom Attribution */}
-        <div className="absolute bottom-4 lg:bottom-6 left-0 right-0 text-center text-xs lg:text-sm text-[#3B4953] opacity-60">
-          © 2026 NCBA Bank · Secure Construction Financing
+        <div className="absolute bottom-4 lg:bottom-6 left-0 right-0 text-center text-xs lg:text-sm text-white/60">
+          © 2026 NCBA Bank · All rights reserved 
         </div>
       </div>
 
-      {/* Right Panel - Login Form (Full width on mobile) */}
+      {/* Right Panel - 35% on desktop */}
       <div className="w-full lg:w-[35%] flex items-center justify-center p-4 sm:p-6 lg:p-8 min-h-screen lg:min-h-0">
         <div className="w-full max-w-sm sm:max-w-md mx-auto space-y-6 lg:space-y-8">
-          {/* Mobile Logo - Visible only on mobile */}
+          {/* Mobile Logo */}
           <div className="lg:hidden text-center mb-4">
-            <h1 className="text-3xl sm:text-4xl font-light text-[#3B4953]">
-              Geo<span className="font-semibold text-[#5A7863]">Build</span>
+            <h1 className="text-3xl sm:text-4xl font-light text-[#1A3636]">
+              Geo<span className="font-semibold text-[#677D6A]">Build</span>
             </h1>
             <p className="mt-2 text-sm text-[#3B4953]/60">
               Digitized Project Monitoring System
@@ -96,48 +93,46 @@ export const Login: React.FC = () => {
 
           {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="mt-6 sm:mt-8 space-y-4 sm:space-y-6">
-            <div className="space-y-4 sm:space-y-5">
-              {/* Email Field */}
-              <div>
-                <label htmlFor="email" className="block text-xs sm:text-sm font-medium text-[#3B4953] mb-1 sm:mb-1.5">
-                  Email address
-                </label>
-                <input
-                  id="email"
-                  type="email"
-                  {...register('email')}
-                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base rounded-xl border border-[#90AB8B]/30 bg-white/50 
-                           focus:outline-none focus:ring-2 focus:ring-[#5A7863] focus:border-transparent
-                           placeholder:text-[#3B4953]/30 transition-all duration-200
-                           text-[#3B4953]"
-                  placeholder="architect@firm.com"
-                  autoComplete="email"
-                />
-                {errors.email && (
-                  <p className="mt-1 text-xs sm:text-sm text-[#D14545]">{errors.email.message}</p>
-                )}
-              </div>
+            {/* Email Field */}
+            <div>
+              <label htmlFor="email" className="block text-xs sm:text-sm font-medium text-[#1A3636] mb-1 sm:mb-1.5">
+                Email address
+              </label>
+              <input
+                id="email"
+                type="email"
+                {...register('email')}
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base rounded-xl border border-[#677D6A]/30 bg-white/50 
+                         focus:outline-none focus:ring-2 focus:ring-[#40534C] focus:border-transparent
+                         placeholder:text-[#40534C]/30 transition-all duration-200
+                         text-[#1A3636]"
+                placeholder="architect@firm.com"
+                autoComplete="email"
+              />
+              {errors.email && (
+                <p className="mt-1 text-xs sm:text-sm text-[#D6BD98]">{errors.email.message}</p>
+              )}
+            </div>
 
-              {/* Password Field */}
-              <div>
-                <label htmlFor="password" className="block text-xs sm:text-sm font-medium text-[#3B4953] mb-1 sm:mb-1.5">
-                  Password
-                </label>
-                <input
-                  id="password"
-                  type="password"
-                  {...register('password')}
-                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base rounded-xl border border-[#90AB8B]/30 bg-white/50
-                           focus:outline-none focus:ring-2 focus:ring-[#5A7863] focus:border-transparent
-                           placeholder:text-[#3B4953]/30 transition-all duration-200
-                           text-[#3B4953]"
-                  placeholder="••••••••"
-                  autoComplete="current-password"
-                />
-                {errors.password && (
-                  <p className="mt-1 text-xs sm:text-sm text-[#D14545]">{errors.password.message}</p>
-                )}
-              </div>
+            {/* Password Field */}
+            <div>
+              <label htmlFor="password" className="block text-xs sm:text-sm font-medium text-[#1A3636] mb-1 sm:mb-1.5">
+                Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                {...register('password')}
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base rounded-xl border border-[#677D6A]/30 bg-white/50
+                         focus:outline-none focus:ring-2 focus:ring-[#40534C] focus:border-transparent
+                         placeholder:text-[#40534C]/30 transition-all duration-200
+                         text-[#1A3636]"
+                placeholder="••••••••"
+                autoComplete="current-password"
+              />
+              {errors.password && (
+                <p className="mt-1 text-xs sm:text-sm text-[#D6BD98]">{errors.password.message}</p>
+              )}
             </div>
 
             {/* Remember Me & Forgot Password */}
@@ -147,17 +142,17 @@ export const Login: React.FC = () => {
                   id="remember-me"
                   type="checkbox"
                   {...register('rememberMe')}
-                  className="h-4 w-4 rounded border-[#90AB8B]/30 text-[#5A7863] 
-                           focus:ring-[#5A7863] focus:ring-offset-0"
+                  className="h-4 w-4 rounded border-[#677D6A]/30 text-[#40534C] 
+                           focus:ring-[#40534C] focus:ring-offset-0"
                 />
-                <label htmlFor="remember-me" className="ml-2 block text-xs sm:text-sm text-[#3B4953]/70">
+                <label htmlFor="remember-me" className="ml-2 block text-xs sm:text-sm text-[#40534C]/70">
                   Remember me
                 </label>
               </div>
 
               <Link
                 to="/forgot-password"
-                className="text-xs sm:text-sm font-medium text-[#5A7863] hover:text-[#3B4953] transition-colors"
+                className="text-xs sm:text-sm font-medium text-[#677D6A] hover:text-[#1A3636] transition-colors"
               >
                 Forgot password?
               </Link>
@@ -167,11 +162,11 @@ export const Login: React.FC = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-[#5A7863] hover:bg-[#3B4953] text-white py-3 sm:py-3.5 px-4 rounded-xl
+              className="w-full bg-[#40534C] hover:bg-[#1A3636] text-white py-3 sm:py-3.5 px-4 rounded-xl
                        font-medium text-sm sm:text-base transition-all duration-200 
                        active:scale-[0.98] hover:scale-[1.02] transform
-                       focus:outline-none focus:ring-2 focus:ring-[#5A7863] focus:ring-offset-2
-                       disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                       focus:outline-none focus:ring-2 focus:ring-[#677D6A] focus:ring-offset-2
+                       disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -189,21 +184,21 @@ export const Login: React.FC = () => {
             {/* Divider */}
             <div className="relative my-4 sm:my-6">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-[#90AB8B]/20"></div>
+                <div className="w-full border-t border-[#677D6A]/20"></div>
               </div>
               <div className="relative flex justify-center text-xs">
-                <span className="px-4 bg-white text-[#3B4953]/40">
+                <span className="px-4 bg-white text-[#40534C]/40">
                   Secure access
                 </span>
               </div>
             </div>
 
             {/* Register Link */}
-            <p className="text-center text-xs sm:text-sm text-[#3B4953]/60">
+            <p className="text-center text-xs sm:text-sm text-[#40534C]/60">
               Don't have an account?{' '}
               <Link
                 to="/register"
-                className="font-medium text-[#5A7863] hover:text-[#3B4953] transition-colors"
+                className="font-medium text-[#677D6A] hover:text-[#1A3636] transition-colors"
               >
                 Contact administrator
               </Link>

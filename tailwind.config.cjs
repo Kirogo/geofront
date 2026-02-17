@@ -6,40 +6,45 @@ module.exports = {
   ],
   theme: {
     extend: {
-      // Custom Font
+      colors: {
+        primary: {
+          50: '#F5F7F4',
+          100: '#E8EDE6',
+          200: '#D1DACD',
+          300: '#B3C1B4',
+          400: '#95A89B',
+          500: '#677D6A',      // Primary soft
+          600: '#40534C',       // Primary medium
+          700: '#2A3A36',
+          800: '#1A3636',       // Primary dark
+          900: '#0F2424',
+        },
+        accent: {
+          100: '#FCF9F2',
+          200: '#F9F0E0',
+          300: '#F0E2CC',
+          400: '#E3D0B2',
+          500: '#D6BD98',       // Accent warm
+          600: '#C0A47C',
+          700: '#A58560',
+          800: '#8A6644',
+          900: '#6F4728',
+        },
+        neutral: {
+          50: '#F9FAFB',
+          100: '#F3F4F6',
+          200: '#E5E7EB',
+          300: '#D1D5DB',
+          400: '#9CA3AF',
+          500: '#6B7280',
+          600: '#4B5563',
+          700: '#374151',
+          800: '#1F2937',
+          900: '#111827',
+        },
+      },
       fontFamily: {
         sans: ['Century Gothic', 'CenturyGothic', 'AppleGothic', 'sans-serif'],
-      },
-      colors: {
-        // Construction/Earth Theme
-        primary: {
-          50: '#EBF4DD',
-          100: '#DCE8CC',
-          200: '#C6DAB5',
-          300: '#AAC19A',
-          400: '#90AB8B',
-          500: '#7A937D',
-          600: '#5A7863',
-          700: '#4A5F51',
-          800: '#3B4953',
-          900: '#2C353D',
-        },
-        secondary: {
-          50: '#F8FAF5',
-          100: '#F0F4EB',
-          200: '#E1E8D7',
-          300: '#D2DCC3',
-          400: '#C3D0AF',
-          500: '#B4C49B',
-          600: '#A5B887',
-          700: '#90A573',
-          800: '#7B925F',
-          900: '#667F4B',
-        },
-        success: '#5A7863',
-        warning: '#D4A373',
-        error: '#D14545',
-        info: '#90AB8B',
       },
     },
   },

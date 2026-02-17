@@ -1,37 +1,32 @@
+// src/components/layout/Header/Header.tsx
 import React from 'react'
-import { Link } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { toggleSidebar } from '@/store/slices/uiSlice'
 import { useAuth } from '@/hooks/useAuth'
 import { useNotifications } from '@/hooks/useNotifications'
 import { Dropdown } from '@/components/common/Dropdown'
-
 import { UserMenu } from './UserMenu'
 
 export const Header: React.FC = () => {
   const dispatch = useAppDispatch()
   const { user } = useAuth()
   const { unreadCount, toggleNotifications } = useNotifications()
-  const { sidebarOpen } = useAppSelector((state) => state.ui)
+  const { currentPageTitle } = useAppSelector((state) => state.ui)
 
   const handleToggleSidebar = () => {
     dispatch(toggleSidebar())
   }
 
-  const handleNotificationClick = () => {
-    toggleNotifications()
-  }
-
   return (
-    <header className="bg-white border-b border-secondary-200 sticky top-0 z-40">
+    <header className="bg-white border-b border-[#D6BD98]/20 sticky top-0 z-30 shadow-sm">
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Left section */}
+          {/* Left section - Mobile menu button + Page title */}
           <div className="flex items-center">
-            {/* Sidebar Toggle */}
+            {/* Mobile Menu Toggle - Only visible on mobile */}
             <button
               onClick={handleToggleSidebar}
-              className="p-2 rounded-md text-secondary-400 hover:text-secondary-500 hover:bg-secondary-100 focus:outline-none focus:ring-2 focus:ring-primary-500 lg:hidden"
+              className="lg:hidden p-2 rounded-md text-[#40534C] hover:bg-[#D6BD98]/10 hover:text-[#1A3636] focus:outline-none focus:ring-2 focus:ring-[#677D6A] mr-2"
               aria-label="Toggle sidebar"
             >
               <svg
@@ -44,30 +39,23 @@ export const Header: React.FC = () => {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d={sidebarOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}
+                  d="M4 6h16M4 12h16M4 18h16"
                 />
               </svg>
             </button>
 
-            {/* Logo */}
-            <Link to="/" className="ml-4 flex items-center lg:ml-0">
-              <img
-                className="h-8 w-auto"
-                src="/assets/images/logo.svg"
-                alt="GeoBuild"
-              />
-              <span className="ml-2 text-xl font-semibold text-primary-600">
-                GeoBuild
-              </span>
-            </Link>
+            {/* Page Title */}
+            <h1 className="text-xl font-semibold text-[#1A3636]">
+              {currentPageTitle || 'Dashboard'}
+            </h1>
           </div>
 
-          {/* Right section */}
-          <div className="flex items-center space-x-4">
+          {/* Right section - Notifications & User Menu */}
+          <div className="flex items-center space-x-2 sm:space-x-4">
             {/* Notifications */}
             <button
-              onClick={handleNotificationClick}
-              className="relative p-2 rounded-full text-secondary-400 hover:text-secondary-500 hover:bg-secondary-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              onClick={toggleNotifications}
+              className="relative p-2 rounded-full text-[#40534C] hover:text-[#1A3636] hover:bg-[#D6BD98]/10 focus:outline-none focus:ring-2 focus:ring-[#677D6A] transition-colors duration-200"
               aria-label="Notifications"
             >
               <svg
@@ -83,8 +71,9 @@ export const Header: React.FC = () => {
                   d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
                 />
               </svg>
+              
               {unreadCount > 0 && (
-                <span className="absolute top-0 right-0 block h-5 w-5 rounded-full bg-error text-white text-xs font-medium flex items-center justify-center transform -translate-y-1/2 translate-x-1/2">
+                <span className="absolute top-1 right-1 flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-[#1A3636] text-white text-xs font-medium ring-2 ring-white">
                   {unreadCount > 9 ? '9+' : unreadCount}
                 </span>
               )}
@@ -93,20 +82,23 @@ export const Header: React.FC = () => {
             {/* User Menu */}
             <Dropdown
               trigger={
-                <button className="flex items-center space-x-3 focus:outline-none">
-                  <div className="h-8 w-8 rounded-full bg-primary-100 flex items-center justify-center">
-                    <span className="text-sm font-medium text-primary-700">
-                      {user?.firstName?.charAt(0).toUpperCase()}
+                <button className="flex items-center space-x-2 sm:space-x-3 focus:outline-none group p-1 rounded-lg hover:bg-[#D6BD98]/10 transition-colors duration-200">
+                  <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-gradient-to-br from-[#677D6A] to-[#40534C] flex items-center justify-center shadow-sm group-hover:shadow transition-shadow">
+                    <span className="text-sm sm:text-base font-medium text-white">
+                      {user?.firstName?.charAt(0).toUpperCase() || 'U'}
+                      {user?.lastName?.charAt(0).toUpperCase()}
                     </span>
                   </div>
+                  
                   <div className="hidden md:block text-left">
-                    <p className="text-sm font-medium text-secondary-700">
+                    <p className="text-sm font-medium text-[#1A3636]">
                       {user ? `${user.firstName} ${user.lastName}` : 'User'}
                     </p>
-                    <p className="text-xs text-secondary-500">{user?.role}</p>
+                    <p className="text-xs text-[#677D6A] capitalize">{user?.role?.toLowerCase() || 'RM'}</p>
                   </div>
+                  
                   <svg
-                    className="h-5 w-5 text-secondary-400"
+                    className="h-4 w-4 sm:h-5 sm:w-5 text-[#677D6A] group-hover:text-[#40534C] transition-colors"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"

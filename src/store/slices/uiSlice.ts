@@ -1,3 +1,4 @@
+// src/store/slices/uiSlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface UIState {
@@ -22,8 +23,11 @@ interface Breadcrumb {
   path?: string
 }
 
+// Check if we're on desktop on initial load
+const isDesktop = typeof window !== 'undefined' ? window.innerWidth >= 1024 : true
+
 const initialState: UIState = {
-  sidebarOpen: true,
+  sidebarOpen: isDesktop, // On desktop, sidebar starts open
   theme: 'system',
   isLoading: false,
   modalState: {},
