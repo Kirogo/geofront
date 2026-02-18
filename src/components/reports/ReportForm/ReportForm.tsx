@@ -1,186 +1,437 @@
+// src/components/reports/ReportForm/ReportForm.tsx
 import React, { useState, useEffect } from 'react'
-import { CreateReportDto } from '@/types/report.types'
-import { ClientSearch } from './ClientSearch'
-import { Input } from '@/components/common/Input/Input'
-import { Select } from '@/components/common/Select/Select'
-import { usersApi } from '@/services/api/usersApi'
-import { User } from '@/types/auth.types'
+import { useForm } from 'react-hook-form'
+import { IBPSLookup } from '../IBPSLookup'   // Changed from './IBPSLookup' to '../IBPSLookup'
+import { ClientSearch } from './ClientSearch'  // This one is in the same folder - correct
+import { PhotoUpload } from '../PhotoUpload'  // Changed from './PhotoUpload' to '../PhotoUpload'
+import { DocumentAccordion } from './DocumentAccordion'  // In same folder
+import { WorkProgressSection } from './WorkProgressSection'  // In same folder
+import { IssuesSection } from './IssuesSection'  // In same folder
+import { SiteDetailsSection } from './SiteDetailsSection'  // In same folder
+import { GeoLocationMap } from './GeoLocationMap'  // In same folder
+import { CreateReportDto, WorkProgress, Issue } from '@/types/report.types'
+import { GeotagData } from '@/types/geotag.types'
+import { Client } from '@/types/client.types'
+import { 
+  ChevronRight, 
+  ChevronLeft,
+  AlertCircle 
+} from 'lucide-react'
+import toast from 'react-hot-toast'
 
 interface ReportFormProps {
-    initialData?: Partial<CreateReportDto>
-    onSubmit: (data: CreateReportDto, photos: File[], isDraft?: boolean) => void | Promise<void>
-    onCancel?: () => void
-    isLoading?: boolean
+  id?: string
+  onSubmit: (
+    data: Omit<CreateReportDto, 'workProgress' | 'issues' | 'photos' | 'attachments'>,
+    workProgress: Omit<WorkProgress, 'id'>[],
+    issues: Omit<Issue, 'id'>[],
+    photos: File[],
+    attachments: File[],
+    isDraft?: boolean
+  ) => Promise<void>
+  onCancel: () => void
+  onStepChange?: (step: number) => void
 }
 
 export const ReportForm: React.FC<ReportFormProps> = ({
-    initialData,
-    onSubmit,
-    isLoading = false,
+  id,
+  onSubmit,
+  onCancel,
+  onStepChange
 }) => {
-    const [formData, setFormData] = useState<Partial<CreateReportDto>>(initialData || {
-        workProgress: [],
-        issues: []
-    })
-    const [selectedClient, setSelectedClient] = useState<any>(null)
-    const [errors, setErrors] = useState<Record<string, string>>({})
+  const [currentStep, setCurrentStep] = useState(1)
+  const [photos, setPhotos] = useState<File[]>([])
+  const [attachments, setAttachments] = useState<File[]>([])
+  const [workProgress, setWorkProgress] = useState<Omit<WorkProgress, 'id'>[]>([])
+  const [issues, setIssues] = useState<Omit<Issue, 'id'>[]>([])
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [facilityData, setFacilityData] = useState<any>(null)
 
-    // RM selection state
-    const [rms, setRms] = useState<User[]>([])
-
-    // Fetch RMs
-    useEffect(() => {
-        const fetchRms = async () => {
-            try {
-                const response = await usersApi.getUsers()
-                setRms(response.data.filter(u => u.role?.toLowerCase() === 'rm'))
-            } catch (error) {
-                console.error('Failed to fetch RMs:', error)
-            }
-        }
-        fetchRms()
-    }, [])
-
-    const handleClientSelect = (client: any) => {
-        setSelectedClient(client)
-        setFormData((prev) => ({
-            ...prev,
-            clientId: client.id,
-            siteAddress: client.address || prev.siteAddress || ''
-        }))
-        setErrors((prev) => ({ ...prev, clientId: '' }))
+  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<Omit<CreateReportDto, 'workProgress' | 'issues' | 'photos' | 'attachments'>>({
+    defaultValues: {
+      documents: []
     }
+  })
 
-    const validate = (isDraft: boolean): boolean => {
-        if (isDraft) return true
+  // Notify parent of step changes
+  useEffect(() => {
+    onStepChange?.(currentStep)
+  }, [currentStep, onStepChange])
 
-        const newErrors: Record<string, string> = {}
+const handleFacilityLookup = (data: any) => {
+  setFacilityData(data)
+  // Auto-populate form fields with the facility data
+  setValue('clientId', data.clientId)
+  setValue('projectName', data.projectName)
+  setValue('siteAddress', data.siteAddress)
+  setValue('loanType', data.loanType)
+  
+  // You can also store the full facility data if needed
+  console.log('Facility data loaded:', data)
+}
 
-        if (!formData.clientId) newErrors.clientId = 'Client is required'
-        if (!formData.rmId) newErrors.rmId = 'Assigned RM is required'
-        if (!formData.projectName) newErrors.projectName = 'Project Name is required'
-        if (!formData.ibpsNo) newErrors.ibpsNo = 'IBPS NO is required'
-
-        setErrors(newErrors)
-        return Object.keys(newErrors).length === 0
+  const handleClientSelect = (client: Client) => {
+    setValue('clientId', client.id)
+    setValue('projectName', client.projectName || '')
+    if (client.address) {
+      setValue('siteAddress', client.address)
     }
+  }
 
-    const onSubmitHandler = async (e: React.FormEvent, isDraft: boolean) => {
-        e.preventDefault()
+  const handleLocationCapture = (geotag: GeotagData) => {
+    setValue('siteCoordinates', geotag)
+  }
 
-        if (!validate(isDraft)) {
-            return
+  const nextStep = () => {
+    if (currentStep < 6) setCurrentStep(currentStep + 1)
+  }
+
+  const prevStep = () => {
+    if (currentStep > 1) setCurrentStep(currentStep - 1)
+  }
+
+  const onFormSubmit = async (data: Omit<CreateReportDto, 'workProgress' | 'issues' | 'photos' | 'attachments'>, event?: React.BaseSyntheticEvent) => {
+    setIsSubmitting(true)
+    try {
+      const submitter = (event?.nativeEvent as any)?.submitter
+      const isDraft = submitter?.value === 'draft'
+      
+      // Validate required fields based on step
+      if (!isDraft) {
+        if (!data.clientId) {
+          toast.error('Please select a client')
+          setCurrentStep(1)
+          return
         }
-
-        try {
-            await onSubmit(formData as CreateReportDto, [], isDraft)
-        } catch (error) {
-            console.error('Form submission error:', error)
+        if (!data.siteAddress) {
+          toast.error('Please enter site address')
+          setCurrentStep(2)
+          return
         }
+      }
+      
+      await onSubmit(data, workProgress, issues, photos, attachments, isDraft)
+    } finally {
+      setIsSubmitting(false)
     }
+  }
 
-    return (
-        <form className="space-y-6" onSubmit={(e) => onSubmitHandler(e, false)}>
-            {/* Main Inner Card */}
-            <div className="bg-white rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.1)] border-t-[6px] border-transparent overflow-hidden">
-                <div className="p-8 space-y-6">
-                    <h2 className="text-2xl font-bold text-[#1a365d] mb-8">Create New Site Visit Report</h2>
-
-                    {/* Customer Selection row 1 */}
-                    <div className="w-full">
-                        <ClientSearch
-                            selectedClientId={formData.clientId}
-                            onClientSelect={handleClientSelect}
-                            error={errors.clientId}
-                            minimal={true}
-                        />
-                    </div>
-
-                    {/* Customer Info row 2 */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <Input
-                            placeholder="Customer Name"
-                            value={selectedClient?.name || ''}
-                            readOnly
-                            disabled
-                            className="bg-secondary-50"
-                        />
-                        <Input
-                            placeholder="Customer Number"
-                            value={selectedClient?.customerNumber || ''}
-                            readOnly
-                            disabled
-                            className="bg-secondary-50"
-                        />
-                        <Input
-                            placeholder="Customer Email"
-                            value={selectedClient?.email || ''}
-                            readOnly
-                            disabled
-                            className="bg-secondary-50"
-                        />
-                    </div>
-
-                    {/* RM Search row 3 */}
-                    <div className="w-full">
-                        <Select
-                            label="Search RM..."
-                            value={formData.rmId || ''}
-                            onChange={(e) => setFormData({ ...formData, rmId: e.target.value })}
-                            options={[
-                                { value: '', label: 'Select RM' },
-                                ...rms.map(rm => ({ value: rm.id, label: `${rm.firstName} ${rm.lastName}` }))
-                            ]}
-                            error={errors.rmId}
-                        />
-                    </div>
-
-                    {/* Project Name row 4 */}
-                    <div className="w-full">
-                        <Input
-                            label="Enter Project Name"
-                            value={formData.projectName || ''}
-                            onChange={(e) => setFormData({ ...formData, projectName: e.target.value })}
-                            placeholder="Enter project name"
-                            error={errors.projectName}
-                        />
-                    </div>
-
+  const renderStep = () => {
+    switch (currentStep) {
+      case 1:
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center gap-2 mb-6">
+              <div className="w-8 h-8 rounded-full bg-[#677D6A] text-white flex items-center justify-center font-semibold">
+                1
+              </div>
+              <h3 className="text-lg font-semibold text-[#1A3636]">Basic Information</h3>
+            </div>
+            
+            <div className="space-y-4">
+              <IBPSLookup onLookup={handleFacilityLookup} />
+              
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-[#D6BD98]"></div>
                 </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-white text-[#40534C]">OR</span>
+                </div>
+              </div>
+
+              <ClientSearch onClientSelect={handleClientSelect} />
+
+              <div>
+                <label className="block text-sm font-medium text-[#40534C] mb-1">
+                  Title <span className="text-red-500">*</span>
+                </label>
+                <input
+                  {...register('title', { required: 'Title is required' })}
+                  className="w-full px-3 py-2 border border-[#D6BD98] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#677D6A] focus:border-transparent"
+                  placeholder="Enter report title"
+                />
+                {errors.title && (
+                  <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" />
+                    {errors.title.message}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-[#40534C] mb-1">
+                  Description
+                </label>
+                <textarea
+                  {...register('description')}
+                  rows={3}
+                  className="w-full px-3 py-2 border border-[#D6BD98] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#677D6A] focus:border-transparent"
+                  placeholder="Brief description of the site visit"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-[#40534C] mb-1">
+                  Project Name
+                </label>
+                <input
+                  {...register('projectName')}
+                  className="w-full px-3 py-2 border border-[#D6BD98] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#677D6A] focus:border-transparent"
+                  placeholder="Enter project name"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-[#40534C] mb-1">
+                  Loan Type
+                </label>
+                <select
+                  {...register('loanType')}
+                  className="w-full px-3 py-2 border border-[#D6BD98] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#677D6A] focus:border-transparent"
+                >
+                  <option value="">Select loan type</option>
+                  <option value="construction">Construction Loan</option>
+                  <option value="mortgage">Mortgage</option>
+                  <option value="development">Property Development</option>
+                  <option value="renovation">Renovation Loan</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        )
+
+      case 2:
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center gap-2 mb-6">
+              <div className="w-8 h-8 rounded-full bg-[#677D6A] text-white flex items-center justify-center font-semibold">
+                2
+              </div>
+              <h3 className="text-lg font-semibold text-[#1A3636]">Site Visit Details</h3>
             </div>
 
-            {/* IBPS Section Below Card */}
-            <div className="px-2 space-y-4">
-                <div className="space-y-2">
-                    <label className="text-sm font-bold text-[#1a365d]">IBPS NO *</label>
-                    <Input
-                        placeholder="Enter IBPS Number"
-                        value={formData.ibpsNo || ''}
-                        onChange={(e) => setFormData({ ...formData, ibpsNo: e.target.value })}
-                        error={errors.ibpsNo}
-                    />
-                </div>
+            <SiteDetailsSection
+              register={register}
+              errors={errors}
+            />
+            
+            <GeoLocationMap onLocationCapture={handleLocationCapture} />
 
-                {/* Main Action Button */}
-                <div className="pt-4">
-                    <button
-                        type="submit"
-                        disabled={isLoading}
-                        className={`w-full py-4 px-6 rounded-lg text-lg font-medium transition-all ${isLoading
-                            ? 'bg-secondary-100 text-secondary-400 cursor-not-allowed'
-                            : 'bg-primary-600 text-white hover:bg-primary-700 shadow-lg'
-                            }`}
-                        onClick={(e) => onSubmitHandler(e, false)}
-                    >
-                        {isLoading ? 'Creating...' : 'Create Site Visit Report'}
-                    </button>
-                    {Object.keys(errors).length > 0 && (
-                        <p className="mt-4 text-center text-red-500 text-sm">
-                            Please fill all required fields (Assigned RM, Loan Type, and IBPS NO)
-                        </p>
-                    )}
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-[#40534C] mb-1">
+                  Weather Conditions
+                </label>
+                <select
+                  {...register('weather')}
+                  className="w-full px-3 py-2 border border-[#D6BD98] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#677D6A] focus:border-transparent"
+                >
+                  <option value="">Select weather</option>
+                  <option value="sunny">Sunny</option>
+                  <option value="cloudy">Cloudy</option>
+                  <option value="rainy">Rainy</option>
+                  <option value="windy">Windy</option>
+                  <option value="foggy">Foggy</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-[#40534C] mb-1">
+                  Temperature (°C)
+                </label>
+                <input
+                  type="number"
+                  {...register('temperature', { valueAsNumber: true })}
+                  className="w-full px-3 py-2 border border-[#D6BD98] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#677D6A] focus:border-transparent"
+                  placeholder="e.g., 25"
+                />
+              </div>
             </div>
-        </form>
-    )
+          </div>
+        )
+
+      case 3:
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center gap-2 mb-6">
+              <div className="w-8 h-8 rounded-full bg-[#677D6A] text-white flex items-center justify-center font-semibold">
+                3
+              </div>
+              <h3 className="text-lg font-semibold text-[#1A3636]">Work Progress</h3>
+            </div>
+
+            <WorkProgressSection
+              workProgress={workProgress}
+              onChange={setWorkProgress}
+            />
+          </div>
+        )
+
+      case 4:
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center gap-2 mb-6">
+              <div className="w-8 h-8 rounded-full bg-[#677D6A] text-white flex items-center justify-center font-semibold">
+                4
+              </div>
+              <h3 className="text-lg font-semibold text-[#1A3636]">Issues & Concerns</h3>
+            </div>
+
+            <IssuesSection
+              issues={issues}
+              onChange={setIssues}
+            />
+          </div>
+        )
+
+      case 5:
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center gap-2 mb-6">
+              <div className="w-8 h-8 rounded-full bg-[#677D6A] text-white flex items-center justify-center font-semibold">
+                5
+              </div>
+              <h3 className="text-lg font-semibold text-[#1A3636]">Photos & Documents</h3>
+            </div>
+
+            <PhotoGallery 
+              photos={photos} 
+              onPhotosChange={setPhotos}
+            />
+            
+            <PhotoUpload 
+              photos={photos} 
+              onPhotosChange={setPhotos}
+            />
+            
+            <DocumentAccordion 
+              documents={attachments} 
+              onDocumentsChange={setAttachments} 
+            />
+          </div>
+        )
+
+      case 6:
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center gap-2 mb-6">
+              <div className="w-8 h-8 rounded-full bg-[#677D6A] text-white flex items-center justify-center font-semibold">
+                6
+              </div>
+              <h3 className="text-lg font-semibold text-[#1A3636]">Review & Submit</h3>
+            </div>
+
+            <div className="bg-[#D6BD98]/10 p-6 rounded-lg space-y-4">
+              <h4 className="font-medium text-[#1A3636]">Please review your information before submitting</h4>
+              
+              <div className="space-y-3">
+                <div className="flex justify-between py-2 border-b border-[#D6BD98]/30">
+                  <span className="text-[#40534C]">Client:</span>
+                  <span className="font-medium text-[#1A3636]">{watch('clientId') || 'Not selected'}</span>
+                </div>
+                <div className="flex justify-between py-2 border-b border-[#D6BD98]/30">
+                  <span className="text-[#40534C]">Project:</span>
+                  <span className="font-medium text-[#1A3636]">{watch('projectName') || 'Not provided'}</span>
+                </div>
+                <div className="flex justify-between py-2 border-b border-[#D6BD98]/30">
+                  <span className="text-[#40534C]">Visit Date:</span>
+                  <span className="font-medium text-[#1A3636]">
+                    {watch('visitDate') ? new Date(watch('visitDate')).toLocaleDateString() : 'Not set'}
+                  </span>
+                </div>
+                <div className="flex justify-between py-2 border-b border-[#D6BD98]/30">
+                  <span className="text-[#40534C]">Work Progress Items:</span>
+                  <span className="font-medium text-[#1A3636]">{workProgress.length}</span>
+                </div>
+                <div className="flex justify-between py-2 border-b border-[#D6BD98]/30">
+                  <span className="text-[#40534C]">Issues Logged:</span>
+                  <span className="font-medium text-[#1A3636]">{issues.length}</span>
+                </div>
+                <div className="flex justify-between py-2 border-b border-[#D6BD98]/30">
+                  <span className="text-[#40534C]">Photos:</span>
+                  <span className="font-medium text-[#1A3636]">{photos.length} uploaded</span>
+                </div>
+                <div className="flex justify-between py-2 border-b border-[#D6BD98]/30">
+                  <span className="text-[#40534C]">Documents:</span>
+                  <span className="font-medium text-[#1A3636]">{attachments.length} uploaded</span>
+                </div>
+              </div>
+
+              <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <p className="text-sm text-yellow-800 flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4" />
+                  By submitting, you confirm that all information provided is accurate and photos are geo-tagged.
+                </p>
+              </div>
+            </div>
+          </div>
+        )
+
+      default:
+        return null
+    }
+  }
+
+  return (
+    <form id={id} onSubmit={handleSubmit((data, event) => onFormSubmit(data, event))}>
+      {renderStep()}
+
+      {/* Navigation Buttons */}
+      <div className="flex justify-between mt-8 pt-6 border-t border-[#D6BD98]/30">
+        <button
+          type="button"
+          onClick={prevStep}
+          disabled={currentStep === 1}
+          className={`px-4 py-2 rounded-lg flex items-center gap-2 transition-colors ${
+            currentStep === 1
+              ? 'text-[#677D6A] cursor-not-allowed'
+              : 'text-[#40534C] hover:bg-[#D6BD98]/20'
+          }`}
+        >
+          <ChevronLeft className="w-4 h-4" />
+          Previous
+        </button>
+
+        {currentStep < 6 ? (
+          <button
+            type="button"
+            onClick={nextStep}
+            className="px-6 py-2 bg-[#40534C] text-white rounded-lg hover:bg-[#1A3636] transition-colors flex items-center gap-2"
+          >
+            Next
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        ) : (
+          <div className="flex gap-3">
+            <button
+              type="submit"
+              name="action"
+              value="draft"
+              disabled={isSubmitting}
+              className="px-6 py-2 border border-[#677D6A] text-[#40534C] rounded-lg hover:bg-[#D6BD98]/10 transition-colors disabled:opacity-50"
+            >
+              Save as Draft
+            </button>
+            <button
+              type="submit"
+              name="action"
+              value="submit"
+              disabled={isSubmitting}
+              className="px-6 py-2 bg-[#1A3636] text-white rounded-lg hover:bg-[#40534C] transition-colors disabled:opacity-50 flex items-center gap-2"
+            >
+              {isSubmitting ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Creating...
+                </>
+              ) : (
+                'Create Report'
+              )}
+            </button>
+          </div>
+        )}
+      </div>
+    </form>
+  )
 }

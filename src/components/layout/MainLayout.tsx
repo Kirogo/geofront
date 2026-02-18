@@ -67,7 +67,7 @@ export const MainLayout: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#F5F7F4]">
+    <div className="min-h-screen bg-[#F5F7F4]" style={{ fontFamily: 'Century Gothic, CenturyGothic, AppleGothic, sans-serif' }}>
       {/* Sidebar */}
       <Sidebar isDesktop={isDesktop} />
 
